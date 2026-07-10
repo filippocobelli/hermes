@@ -1,9 +1,17 @@
 # HERMES
 # DOC-000 — Documentation Standard
 
-Document ID: HERMES-FND-000
-Version: 0.1.0
-Status: Draft for Review
+- **Document ID:** HERMES-FND-000
+- **Version:** 0.1.1
+- **Status:** Approved
+- **Owner:** Filippo Cobelli
+- **Reviewers:** Claude (AI-assisted, Systems Architect / Scientific Method Reviewer role)
+- **Last Updated:** 2026-07-10
+- **Related Research Questions:** N/A (applies to all)
+- **Related ADR:** ADR-000
+- **License:** TBD (see foundation license decision)
+
+---
 
 ## 1. Purpose
 
@@ -48,13 +56,11 @@ Every document shall begin with:
 
 Semantic Versioning is adopted.
 
-Major.Minor.Patch
+`Major.Minor.Patch`
 
-Major: structural changes
-
-Minor: new content
-
-Patch: corrections
+- Major: structural changes
+- Minor: new content
+- Patch: corrections
 
 ## 5. Document Structure
 
@@ -86,19 +92,19 @@ Appendices
 
 Foundation documents:
 
-HERMES-FND-XXX
+`HERMES-FND-XXX`
 
 Research Programs:
 
-HERMES-RPXXX
+`HERMES-RPXXX`
 
 Architecture Decisions:
 
-ADR-XXXX
+`ADR-XXXX`
 
 Request for Comments:
 
-RFC-XXXX
+`RFC-XXXX`
 
 ## 7. References
 
@@ -120,4 +126,7 @@ Draft → Technical Review → Scientific Review → Approved
 
 ## 10. Change Log
 
-Every revision shall be recorded.
+| Version | Date | Change |
+|---|---|---|
+| 0.1.0 | 2026-07-10 | Initial draft |
+| 0.1.1 | 2026-07-10 | Added mandatory metadata block per own §3 requirement |

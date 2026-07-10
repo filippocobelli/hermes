@@ -17,7 +17,7 @@ It begins from scientific questions.
 
 ---
 
-# Core Objectives
+## Core Objectives
 
 - Build a fully reproducible scientific workflow.
 - Use open datasets whenever possible.
@@ -28,7 +28,7 @@ It begins from scientific questions.
 
 ---
 
-# First Research Program
+## First Research Program
 
 **RP001 — Surface Transformation and Energy Balance**
 
@@ -36,9 +36,11 @@ Primary research question:
 
 > Does large-scale anthropogenic land transformation produce statistically significant changes in surface energy balance after controlling for known environmental variables?
 
+See [`research_programs/RP001-surface-transformation-energy-balance/`](research_programs/RP001-surface-transformation-energy-balance/).
+
 ---
 
-# Repository Structure
+## Repository Structure
 
 ```
 foundation/
@@ -54,7 +56,7 @@ tools/
 
 ---
 
-# Guiding Principles
+## Guiding Principles
 
 1. Evidence before belief.
 2. Method before conclusion.
@@ -64,9 +66,11 @@ tools/
 6. Every important decision is documented.
 7. Better evidence replaces previous evidence.
 
+Full details: [`foundation/FOUNDATION.md`](foundation/FOUNDATION.md)
+
 ---
 
-# Development Workflow
+## Development Workflow
 
 Every task follows the same lifecycle:
 
@@ -88,42 +92,53 @@ No code is considered complete without documentation and validation.
 
 ---
 
-# AI Transparency
+## Documentation Standard
 
-This project makes use of AI-assisted drafting tools for documentation,
-software architecture discussions and code generation support.
+All documents in this project follow [`foundation/000_DOCUMENTATION_STANDARD.md`](foundation/000_DOCUMENTATION_STANDARD.md).
+
+Architecture decisions are recorded as ADRs in [`governance/adr/`](governance/adr/).
+
+Terminology is standardized in [`foundation/GLOSSARY.md`](foundation/GLOSSARY.md).
+
+---
+
+## AI Transparency
+
+This project makes use of AI-assisted drafting tools for documentation, software architecture discussions and code generation support.
 
 Artificial intelligence is used as a technical assistant, not as a scientific authority.
 
 All scientific decisions, methodological choices, validation procedures and project governance remain under human responsibility.
 
+Full policy: [`governance/AI_USAGE.md`](governance/AI_USAGE.md)
+
 ---
 
-# Roadmap
+## Roadmap
 
 Foundation → Bootstrap → Dataset Acquisition → Scientific Analysis → Validation → Publication
 
 ---
 
-# Contributing
+## Contributing
 
 The contribution process will be defined in `CONTRIBUTING.md`.
 
 ---
 
-# License
+## License
 
 To be defined during Foundation.
 
 ---
 
-# Citation
+## Citation
 
 Citation instructions will be provided through `CITATION.cff`.
 
 ---
 
-# Philosophy
+## Philosophy
 
 Do not trust the conclusions.
 
