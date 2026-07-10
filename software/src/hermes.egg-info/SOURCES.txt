@@ -1,0 +1,15 @@
+README.md
+pyproject.toml
+src/hermes/__init__.py
+src/hermes.egg-info/PKG-INFO
+src/hermes.egg-info/SOURCES.txt
+src/hermes.egg-info/dependency_links.txt
+src/hermes.egg-info/requires.txt
+src/hermes.egg-info/top_level.txt
+src/hermes/acquisition/__init__.py
+src/hermes/analysis/__init__.py
+src/hermes/database/__init__.py
+src/hermes/models/__init__.py
+src/hermes/normalisation/__init__.py
+src/hermes/reporting/__init__.py
+tests/test_bootstrap.py
