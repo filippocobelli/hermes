@@ -1,0 +1,16 @@
+services:
+  postgis:
+    image: postgis/postgis:16-3.4
+    container_name: hermes-postgis
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_NAME:-hermes}
+      POSTGRES_USER: ${DB_USER:-hermes}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-hermes}
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - hermes_postgis_data:/var/lib/postgresql/data
+
+volumes:
+  hermes_postgis_data:
