@@ -2,13 +2,13 @@
 # RP001 — Hypotheses & Pre-Registration
 
 - **Document ID:** HERMES-RP001-001
-- **Version:** 0.2.0
+- **Version:** 0.3.0
 - **Status:** Draft for Review — Sections 1–5 drafted; Sections 4–5 reviewed with Opus 4.8
 - **Owner:** Filippo Cobelli
 - **Reviewers:** Claude (AI-assisted, Scientific Method Reviewer role — Sections 1–3 Sonnet 5, Sections 4–5 Opus 4.8)
 - **Last Updated:** 2026-07-10
 - **Related Research Questions:** RP001
-- **Related ADR:** ADR-001, ADR-002
+- **Related ADR:** ADR-001, ADR-002, ADR-004
 - **License:** TBD
 
 ---
@@ -42,8 +42,15 @@ the following:
    least 2 full years prior to the observation window.
 3. **Documented transformation date** — verifiable independently (permitting records,
    change-detection on archival imagery), not inferred from the outcome dataset.
-4. **No concurrent confounding transformation** — no other large-scale land transformation
-   within a defined buffer radius (placeholder: 2 km) during the observation window.
+4. **No concurrent confounding transformation within 2 km of the sampled interior pixels**
+   — refined per ADR-004: this criterion applies to the specific pixels used for LST
+   sampling, not to every point of the site's full perimeter. If a site's own footprint
+   contains a sub-region ("clean sampling zone") whose interior-buffered pixels are all
+   ≥ 2 km from any other large-scale anthropogenic transformation, that sub-region may be
+   used even if other parts of the same site are closer to a neighbouring transformation.
+   The clean zone must be computed by a fixed, pre-defined geometric rule (erode by one pixel
+   for edge-mixing, then subtract 2 km buffers around every identified neighbour) — never
+   chosen by hand per case.
 
 **Selection order across transformation classes** (to mitigate the bias risk flagged in
 ADR-001), ordered by data availability and verifiability, NOT by expected outcome:
@@ -67,6 +74,14 @@ A control area is valid if, relative to the treatment area, it matches within to
   transformation (historical imagery), not current surrounding cover.
 - **Latitude** — within ±2° (solar geometry).
 - **Distance to nearest water body** — same order of magnitude (microclimate moderation).
+- **No large-scale anthropogenic transformation within 2 km of the control area's own
+  sampled interior pixels** *(added 2026-07-10)* — a control area must be a genuinely
+  undisturbed baseline. Applying Criterion 4's ADR-004 clean-zone logic (Section 1) to
+  candidate control areas as well as treatment areas: a control area near another
+  transformation is not a clean baseline regardless of whether that transformation happens
+  to also be near the treatment site. This must be checked with the same geometry-based
+  method used for treatment sites (see `software/examples/check_case001_confounders_geom.py`
+  as the reference implementation), not assumed from visual inspection alone.
 
 Control areas shall be selected **before** outcome data is examined. Multiple control areas
 per treatment case are required (minimum 2), not merely preferred — this is now a hard
@@ -85,10 +100,10 @@ Minimum set logged and controlled for in every case/control comparison:
 - Regional weather anomalies during the observation window
 - Seasonal timing of the observation window (matched between treatment and control)
 - Any known concurrent regional-scale change (drought, wildfire) affecting both areas
-- **Time of satellite overpass** (added per ADR-002: LST is strongly diurnal; treatment and
-  control observations must come from the same sensor and comparable overpass times)
-- **Surface emissivity** (added per ADR-002: LST retrieval is emissivity-dependent; emissivity
-  differences between land cover types can masquerade as temperature differences)
+- Time of satellite overpass (LST is strongly diurnal; treatment and control observations
+  must come from the same sensor and comparable overpass times)
+- Surface emissivity (LST retrieval is emissivity-dependent; emissivity differences between
+  land cover types can masquerade as temperature differences)
 
 Each specific case may require additional case-specific confounders, documented in a per-case
 appendix.
@@ -113,9 +128,10 @@ appendix.
 - **Pixel-count rule (resolves Section 1 size threshold):** a treatment site must contain at
   least **30 valid (cloud-free, non-edge) Landsat LST pixels** wholly interior to the
   transformed footprint, after excluding a one-pixel buffer along the footprint boundary to
-  avoid mixed-pixel contamination. At 30 m spacing, 30 interior pixels after a boundary
-  buffer corresponds roughly to the ≥ 25 ha placeholder in Section 1; the pixel-count rule is
-  the binding criterion, the hectare figure is indicative.
+  avoid mixed-pixel contamination — and, per ADR-004, also ≥ 2 km from any other identified
+  large-scale transformation. At 30 m spacing, 30 interior pixels after a boundary buffer
+  corresponds roughly to the ≥ 25 ha placeholder in Section 1; the pixel-count rule is the
+  binding criterion, the hectare figure is indicative.
 
 ### 4.2 Secondary outcome
 
@@ -206,13 +222,19 @@ acquisition, a power analysis shall determine the minimum number of treatment si
 number of qualifying sites is below the powered minimum, RP001 shall report the study as
 underpowered rather than proceed and over-claim.
 
+Note (per ADR-004): where a site's usable sample is a "clean sampling zone" smaller than its
+full footprint, the power analysis must use the actual clean-zone pixel count for that site,
+not its full-footprint pixel count.
+
 ### 5.6 Pre-registration lock
 
 Sections 4 and 5 constitute the pre-registered analysis plan. Once locked and committed, any
 deviation (change of primary outcome, test, threshold, correction method, or effect-size
 definition) requires a new ADR and must be reported in the publication as a deviation from
 pre-registration. Analysis decisions made after seeing outcome data are, by definition,
-exploratory and shall be labelled as such.
+exploratory and shall be labelled as such — see
+`research_programs/RP001-surface-transformation-energy-balance/EXPLORATORY_HYPOTHESES.md`
+for hypotheses explicitly logged as non-confirmatory.
 
 ---
 
@@ -229,8 +251,10 @@ human decision reserved to the Owner.
 ## Related Documents
 
 - `research_programs/RP001-surface-transformation-energy-balance/RESEARCH_QUESTION.md`
+- `research_programs/RP001-surface-transformation-energy-balance/EXPLORATORY_HYPOTHESES.md`
 - `governance/adr/ADR-001-generalized-scope.md`
 - `governance/adr/ADR-002-lst-primary-outcome.md`
+- `governance/adr/ADR-004-criterion4-refinement.md`
 - `foundation/GLOSSARY.md`
 
 ## Change Log
@@ -239,3 +263,4 @@ human decision reserved to the Owner.
 |---|---|---|
 | 0.1.0 | 2026-07-10 | Initial draft; Sections 1–3 drafted, Sections 4–5 flagged for Opus review |
 | 0.2.0 | 2026-07-10 | Sections 4–5 completed and reviewed with Opus 4.8 (LST primary per ADR-002, site as unit of analysis, mixed-effects model, FDR correction, power on site count); Section 1 pixel-count rule and Section 3 emissivity/overpass-time confounders added |
+| 0.3.0 | 2026-07-10 | Section 1 Criterion 4 refined per ADR-004 (clean sampling zone); Section 2 control area criteria now require the same no-nearby-transformation check; Section 5.5 power note on clean-zone pixel counts; linked new EXPLORATORY_HYPOTHESES.md |

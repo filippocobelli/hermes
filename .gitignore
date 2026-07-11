@@ -26,3 +26,5 @@ venv/
 *.zip
 *.tar
 *.gz
+# Raw acquired imagery — never commit satellite data to git
+software/data/
