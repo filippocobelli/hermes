@@ -7,9 +7,12 @@ src/hermes.egg-info/dependency_links.txt
 src/hermes.egg-info/requires.txt
 src/hermes.egg-info/top_level.txt
 src/hermes/acquisition/__init__.py
+src/hermes/acquisition/base.py
+src/hermes/acquisition/stac_planetary_computer.py
 src/hermes/analysis/__init__.py
 src/hermes/database/__init__.py
 src/hermes/models/__init__.py
 src/hermes/normalisation/__init__.py
 src/hermes/reporting/__init__.py
+tests/test_acquisition.py
 tests/test_bootstrap.py
