@@ -2,7 +2,7 @@
 # RP001 — Exploratory Hypotheses (Non-Confirmatory)
 
 - **Document ID:** HERMES-RP001-002
-- **Version:** 0.2.0
+- **Version:** 0.2.1
 - **Status:** Draft — Exploratory only, never confirmatory
 - **Owner:** Filippo Cobelli
 - **Reviewers:** Claude (AI-assisted, Scientific Method Reviewer role — Sonnet 5)
@@ -63,16 +63,11 @@ area.
 
 **Origin:** Extension of EH-001, raised after discovering Case 001's surrounding region
 contains 384 transformation-tagged features within 8 km (see Case 001 verification history).
-Filippo proposed a causal chain: installation → air heating → atmospheric heating →
-circulation pattern shifts (analogous to El Niño) → altered precipitation → increased heat
-wave frequency.
-
-**Reviewer assessment of the proposed mechanism, as originally stated:** NOT physically
-plausible at the scale involved. El Niño is an ocean-atmosphere coupled phenomenon operating
-across the Pacific basin (millions of km²), driven by ocean heat content and trade-wind
-dynamics — a fundamentally different physical system from a localized land-surface energy
-perturbation covering a few hundred to a few thousand hectares. No literature was found
-supporting a mechanism at this scale.
+Filippo proposed a causal chain: installation → local air/thermal heating → altered local
+wind/thermal circulation → possible effects on precipitation and heat wave frequency. The
+El Niño comparison used in initial discussion was a scale illustration, not a literal claim
+of ocean-basin-scale teleconnection — the intended scope is local/mesoscale thermal
+circulation, clarified after initial review.
 
 **A physically plausible, literature-supported restatement:**
 
@@ -132,3 +127,4 @@ infrastructure (atmospheric/precipitation data acquisition) to test it properly.
 |---|---|---|
 | 0.1.0 | 2026-07-10 | Initial exploratory hypothesis log; EH-001 recorded |
 | 0.2.0 | 2026-07-10 | EH-002 added (regional mesoscale land-atmosphere feedback), correcting an initially-proposed El Niño-scale mechanism to a literature-supported mesoscale framing; connected to existing Foundation "Atmospheric circulation" long-term research area |
+| 0.2.1 | 2026-07-10 | EH-002 Origin note corrected: El Niño was a scale illustration, not a literal claim — intended scope confirmed as local/mesoscale thermal circulation |
