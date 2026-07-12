@@ -2,7 +2,7 @@
 # RP001 — Exploratory Hypotheses (Non-Confirmatory)
 
 - **Document ID:** HERMES-RP001-002
-- **Version:** 0.1.0
+- **Version:** 0.2.0
 - **Status:** Draft — Exploratory only, never confirmatory
 - **Owner:** Filippo Cobelli
 - **Reviewers:** Claude (AI-assisted, Scientific Method Reviewer role — Sonnet 5)
@@ -59,16 +59,66 @@ area.
    Adjusting RP001's design now to accommodate EH-001 would risk building the study around a
    preferred conclusion.
 
+## EH-002 — Regional Mesoscale Land-Atmosphere Feedback Hypothesis
+
+**Origin:** Extension of EH-001, raised after discovering Case 001's surrounding region
+contains 384 transformation-tagged features within 8 km (see Case 001 verification history).
+Filippo proposed a causal chain: installation → air heating → atmospheric heating →
+circulation pattern shifts (analogous to El Niño) → altered precipitation → increased heat
+wave frequency.
+
+**Reviewer assessment of the proposed mechanism, as originally stated:** NOT physically
+plausible at the scale involved. El Niño is an ocean-atmosphere coupled phenomenon operating
+across the Pacific basin (millions of km²), driven by ocean heat content and trade-wind
+dynamics — a fundamentally different physical system from a localized land-surface energy
+perturbation covering a few hundred to a few thousand hectares. No literature was found
+supporting a mechanism at this scale.
+
+**A physically plausible, literature-supported restatement:**
+
+> Regional clustering of large-scale anthropogenic land transformations (e.g. the observed
+> density of solar installations in parts of Extremadura) may produce mesoscale
+> land-atmosphere feedback effects on local precipitation and/or heat wave frequency,
+> distinct from and larger in spatial extent than the effect of any single installation.
+
+**Literature support for the general phenomenon (not for this specific case):**
+
+- Land-use/land-cover change can alter regional climate through biogeophysical pathways
+  (albedo, heat/moisture partitioning) with effects of similar or greater magnitude than
+  greenhouse-gas-driven change, and landscape heterogeneity can induce mesoscale circulations.
+- Existing studies demonstrating measurable precipitation effects from solar/wind
+  installations operate at installed areas vastly larger than Extremadura's current
+  build-out (e.g. climate-model studies of hypothetical Sahara-scale deployment), and are
+  almost universally regional climate *modelling* studies (e.g. WRF), not satellite
+  observational studies of actual installed capacity.
+- Mesoscale (whole-region, real-installation) observational studies of this kind are
+  explicitly noted in the literature as under-studied relative to panel-scale and
+  hypothetical-regional-scale modelling studies — i.e. a genuine research gap exists, but at
+  a different scale and with different data requirements than RP001.
+
+**Why this is NOT part of RP001, and not a simple future addition to it:**
+
+1. **Different outcome variable entirely.** RP001 measures LST via satellite (a surface
+   radiative property). Testing EH-002 requires precipitation records and/or atmospheric
+   boundary-layer/reanalysis data (e.g. ERA5) — data types HERMES has no acquisition
+   infrastructure for yet (Layer 1 currently targets Landsat/STAC imagery only).
+2. **Different spatial/temporal scale.** RP001 is site-level, pixel-based. EH-002 would need
+   regional-scale analysis, likely requiring a regional climate model or long time series of
+   station/reanalysis data — a different software architecture (Layers 4-5 would need new
+   model classes).
+3. **Already anticipated, correctly sequenced.** `foundation/FOUNDATION.md` already lists
+   "Atmospheric circulation" among HERMES's Long-Term Research Areas. EH-002 is evidence this
+   area has real scientific merit — but it belongs there, as a future, separately
+   pre-registered Research Program (tentatively RP00X), not as a modification to RP001's
+   already near-complete design.
+
 ## Status and Path Forward
 
-EH-001 is logged here for traceability, in case future case selection (Case 002, 003, ...)
-naturally produces the variation in "distance to nearest other transformation" needed to test
-it. If and when RP001 (or a future RP) has enough cases to test EH-001 properly, it would
-require its own pre-registration (metric, test, threshold, power analysis) before being
-treated as confirmatory — exactly as HYPOTHESES.md Sections 4–5 were for the primary question.
-
-Until then: EH-001 does not change Case 001's selection criteria, ADR-004's clean-zone
-approach, or any part of the locked RP001 methodology.
+EH-001 and EH-002 do not change RP001's methodology, Case 001 selection, or any locked
+Section of `HYPOTHESES.md`. Both remain logged for traceability and as motivation for a
+future Research Program, to be scoped and pre-registered independently — with its own
+Research Question, data sources, and falsifiable hypotheses — if and when HERMES has the
+infrastructure (atmospheric/precipitation data acquisition) to test it properly.
 
 ## Related Documents
 
@@ -81,3 +131,4 @@ approach, or any part of the locked RP001 methodology.
 | Version | Date | Change |
 |---|---|---|
 | 0.1.0 | 2026-07-10 | Initial exploratory hypothesis log; EH-001 recorded |
+| 0.2.0 | 2026-07-10 | EH-002 added (regional mesoscale land-atmosphere feedback), correcting an initially-proposed El Niño-scale mechanism to a literature-supported mesoscale framing; connected to existing Foundation "Atmospheric circulation" long-term research area |
