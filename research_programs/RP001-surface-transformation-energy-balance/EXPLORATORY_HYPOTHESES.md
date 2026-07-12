@@ -2,7 +2,7 @@
 # RP001 — Exploratory Hypotheses (Non-Confirmatory)
 
 - **Document ID:** HERMES-RP001-002
-- **Version:** 0.2.1
+- **Version:** 0.3.0
 - **Status:** Draft — Exploratory only, never confirmatory
 - **Owner:** Filippo Cobelli
 - **Reviewers:** Claude (AI-assisted, Scientific Method Reviewer role — Sonnet 5)
@@ -107,13 +107,35 @@ circulation, clarified after initial review.
    pre-registered Research Program (tentatively RP00X), not as a modification to RP001's
    already near-complete design.
 
+## EH-003 — Vegetation-Mediated Fraction of the LST Effect
+
+**Origin:** Arising from the Section 4.3 decision (HYPOTHESES.md v0.4) to treat NDVI as a
+mediator rather than a covariate, and to measure the *total* effect of transformation on LST.
+
+**Question:** Of the total treatment–control LST difference, how much is transmitted *via* the
+change in vegetation (the indirect path: transformation → vegetation change → LST change), and
+how much is the direct effect of the panels/surface themselves (transformation → LST, holding
+vegetation fixed)?
+
+**Why exploratory, not confirmatory:**
+
+1. Mediation analysis requires assumptions (no unmeasured mediator–outcome confounding, correct
+   causal ordering) that are strong and not fully verifiable with observational satellite data.
+2. NDVI over post-construction treatment pixels is a mixed panel+soil+vegetation optical
+   signature (Section 4.3 caveat), not a clean vegetation measure — weakening any mediation
+   estimate over the treatment side specifically.
+3. RP001's confirmatory question is the *total* effect (Section 4.3). The decomposition into
+   direct/indirect is a distinct, secondary scientific question.
+
+**Status:** Exploratory. May be reported descriptively alongside RP001 results but never as a
+confirmatory claim, and never used to reinterpret the primary total-effect result.
+
 ## Status and Path Forward
 
-EH-001 and EH-002 do not change RP001's methodology, Case 001 selection, or any locked
-Section of `HYPOTHESES.md`. Both remain logged for traceability and as motivation for a
-future Research Program, to be scoped and pre-registered independently — with its own
-Research Question, data sources, and falsifiable hypotheses — if and when HERMES has the
-infrastructure (atmospheric/precipitation data acquisition) to test it properly.
+EH-001, EH-002 and EH-003 do not change RP001's confirmatory methodology, Case 001 selection,
+or any locked Section of `HYPOTHESES.md`. They remain logged for traceability and as
+motivation for future analysis or Research Programs, to be scoped and pre-registered
+independently — each with its own Research Question, data sources, and falsifiable hypotheses.
 
 ## Related Documents
 
@@ -128,3 +150,4 @@ infrastructure (atmospheric/precipitation data acquisition) to test it properly.
 | 0.1.0 | 2026-07-10 | Initial exploratory hypothesis log; EH-001 recorded |
 | 0.2.0 | 2026-07-10 | EH-002 added (regional mesoscale land-atmosphere feedback), correcting an initially-proposed El Niño-scale mechanism to a literature-supported mesoscale framing; connected to existing Foundation "Atmospheric circulation" long-term research area |
 | 0.2.1 | 2026-07-10 | EH-002 Origin note corrected: El Niño was a scale illustration, not a literal claim — intended scope confirmed as local/mesoscale thermal circulation |
+| 0.3.0 | 2026-07-11 | EH-003 added (vegetation-mediated fraction of the LST effect), arising from the v0.4 decision to treat NDVI as mediator and measure total effect |

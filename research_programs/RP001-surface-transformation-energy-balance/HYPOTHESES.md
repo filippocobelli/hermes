@@ -2,11 +2,11 @@
 # RP001 — Hypotheses & Pre-Registration
 
 - **Document ID:** HERMES-RP001-001
-- **Version:** 0.3.0
-- **Status:** Draft for Review — Sections 1–5 drafted; Sections 4–5 reviewed with Opus 4.8
+- **Version:** 0.4.0
+- **Status:** Draft for Review — Sections 4–5 revised with Opus 4.8 after literature review; ready for Owner lock decision
 - **Owner:** Filippo Cobelli
-- **Reviewers:** Claude (AI-assisted, Scientific Method Reviewer role — Sections 1–3 Sonnet 5, Sections 4–5 Opus 4.8)
-- **Last Updated:** 2026-07-10
+- **Reviewers:** Claude (AI-assisted, Scientific Method Reviewer role — Sections 1–3 Sonnet 5; Sections 4–5 Opus 4.8, revised after literature review HERMES-RP001-003)
+- **Last Updated:** 2026-07-11
 - **Related Research Questions:** RP001
 - **Related ADR:** ADR-001, ADR-002, ADR-004
 - **License:** TBD
@@ -19,9 +19,13 @@ This document completes the pre-registration required by
 `research_programs/RP001-surface-transformation-energy-balance/RESEARCH_QUESTION.md`
 before any dataset is selected or acquired.
 
-Per ADR-002, RP001's primary outcome is Land Surface Temperature (LST), with albedo as a
-secondary outcome. "Surface energy balance" is the motivating physical context, not a
-directly measured quantity.
+Per ADR-002, RP001's primary outcome is Land Surface Temperature (LST). "Surface energy
+balance" is the motivating physical context, not a directly measured quantity.
+
+Sections 4–5 were revised (v0.4) following a literature review (HERMES-RP001-003) that
+identified three issues in the prior draft: absence of effect-size priors for power analysis,
+a documented seasonal sign reversal of the LST effect in Mediterranean climate, and a
+photovoltaic-specific emissivity retrieval bias. All three are addressed below.
 
 ---
 
@@ -32,217 +36,247 @@ directly measured quantity.
 A transformation site qualifies as a valid treatment case for RP001 if it satisfies all of
 the following:
 
-1. **Size threshold** — minimum contiguous transformed area large enough to be resolvable by
-   the chosen thermal data resolution. Because LST native resolution is coarse (see Section 4
-   and ADR-002), this threshold is tied to the sensor: the transformed area must span at
-   least a defined minimum number of clean thermal pixels (see Section 4 for the exact
-   pixel-count rule). Placeholder: ≥ 25 hectares contiguous when using Landsat-class thermal
-   data.
+1. **Size threshold** — the transformed area must span at least a defined minimum number of
+   clean thermal pixels (Section 4 pixel-count rule). Placeholder: ≥ 25 ha contiguous with
+   Landsat-class thermal data.
 2. **Age threshold** — the transformation must have existed, unchanged in footprint, for at
    least 2 full years prior to the observation window.
-3. **Documented transformation date** — verifiable independently (permitting records,
-   change-detection on archival imagery), not inferred from the outcome dataset.
+3. **Documented transformation date** — verifiable independently, not inferred from the
+   outcome dataset. (Required also for the before/after design in Section 4.5.)
 4. **No concurrent confounding transformation within 2 km of the sampled interior pixels**
-   — refined per ADR-004: this criterion applies to the specific pixels used for LST
-   sampling, not to every point of the site's full perimeter. If a site's own footprint
-   contains a sub-region ("clean sampling zone") whose interior-buffered pixels are all
-   ≥ 2 km from any other large-scale anthropogenic transformation, that sub-region may be
-   used even if other parts of the same site are closer to a neighbouring transformation.
-   The clean zone must be computed by a fixed, pre-defined geometric rule (erode by one pixel
-   for edge-mixing, then subtract 2 km buffers around every identified neighbour) — never
-   chosen by hand per case.
+   (ADR-004 clean-zone rule). Buffer of 2 km validated by literature: the solar "cool island"
+   effect is observed to extend ~700 m from plant boundaries (Longyangxia, Stateline studies),
+   so 2 km is a conservative margin.
 
-**Selection order across transformation classes** (to mitigate the bias risk flagged in
-ADR-001), ordered by data availability and verifiability, NOT by expected outcome:
+**Selection order across transformation classes** (ADR-001 bias mitigation), ordered by data
+availability and verifiability, NOT by expected outcome:
 
-1. Photovoltaic installations (motivating case, not privileged in analysis)
+1. Photovoltaic installations
 2. Logistics hubs / large parking areas
 3. Urban expansion
 4. Remaining Foundation classes in order of dataset availability
-
-This order shall not change after seeing preliminary results without a new ADR.
 
 ## 2. Control Area Selection Criteria
 
 **Status:** Draft
 
 A control area is valid if, relative to the treatment area, it matches within tolerance on:
+climate zone (Köppen, exact match), elevation (±100 m placeholder), pre-transformation land
+cover class, latitude (±2°), distance to nearest water body (same order of magnitude), and —
+per the 2026-07-10 update — has no large-scale anthropogenic transformation within 2 km of
+its own sampled interior pixels (same ADR-004 clean-zone check as treatment sites).
 
-- **Climate zone** (Köppen or equivalent) — exact match required.
-- **Elevation** — within ±100 m (placeholder).
-- **Pre-transformation land cover class** — same class the treatment area had *before*
-  transformation (historical imagery), not current surrounding cover.
-- **Latitude** — within ±2° (solar geometry).
-- **Distance to nearest water body** — same order of magnitude (microclimate moderation).
-- **No large-scale anthropogenic transformation within 2 km of the control area's own
-  sampled interior pixels** *(added 2026-07-10)* — a control area must be a genuinely
-  undisturbed baseline. Applying Criterion 4's ADR-004 clean-zone logic (Section 1) to
-  candidate control areas as well as treatment areas: a control area near another
-  transformation is not a clean baseline regardless of whether that transformation happens
-  to also be near the treatment site. This must be checked with the same geometry-based
-  method used for treatment sites (see `software/examples/check_case001_confounders_geom.py`
-  as the reference implementation), not assumed from visual inspection alone.
-
-Control areas shall be selected **before** outcome data is examined. Multiple control areas
-per treatment case are required (minimum 2), not merely preferred — this is now a hard
-requirement because the analysis in Section 5 relies on between-site variance estimation.
+Control areas selected **before** outcome data is examined. Minimum 2 control areas per
+treatment case (hard requirement — the Section 5 variance estimation and the
+difference-in-differences design both depend on it).
 
 ## 3. Confounding Variables to Control For
 
 **Status:** Draft
 
-Minimum set logged and controlled for in every case/control comparison:
+Minimum set: pre-transformation land cover class; elevation; latitude/climate zone; proximity
+to water bodies; regional weather anomalies in the observation window; seasonal timing
+(matched treatment/control); concurrent regional-scale change (drought, wildfire); time of
+satellite overpass (LST is diurnal — same sensor, comparable overpass times); surface
+emissivity (see Section 4.1 limitation).
 
-- Pre-existing (pre-transformation) land cover class
-- Elevation
-- Latitude / climate zone
-- Proximity to water bodies
-- Regional weather anomalies during the observation window
-- Seasonal timing of the observation window (matched between treatment and control)
-- Any known concurrent regional-scale change (drought, wildfire) affecting both areas
-- Time of satellite overpass (LST is strongly diurnal; treatment and control observations
-  must come from the same sensor and comparable overpass times)
-- Surface emissivity (LST retrieval is emissivity-dependent; emissivity differences between
-  land cover types can masquerade as temperature differences)
-
-Each specific case may require additional case-specific confounders, documented in a per-case
-appendix.
+**NDVI is deliberately NOT in this list as a controlled covariate** — see Section 4.3 for the
+reasoning (NDVI is a mediator of the transformation's effect, not a confounder; controlling
+for it would answer a different, narrower question than RP001 poses).
 
 ---
 
-## 4. Primary Metrics
+## 4. Outcomes and Metrics
 
-**Status:** Reviewed with Opus 4.8 — Approved for pre-registration
+**Status:** Revised with Opus 4.8 (v0.4) — ready for Owner lock
 
-### 4.1 Primary outcome
+### 4.1 Primary outcome — Land Surface Temperature (LST)
 
-**Land Surface Temperature (LST).** Per ADR-002, this is the declared primary outcome.
+Per ADR-002. Data source: Landsat 8/9 Collection 2 Level-2 surface temperature product
+(atmospherically corrected, 30 m grid). Secondary cross-check: MODIS MOD11/MYD11 (~1 km).
 
-- **Data source (primary):** Landsat 8/9 Collection 2 Level-2 surface temperature product,
-  which provides atmospherically corrected, emissivity-aware LST at 30 m grid spacing (TIRS
-  thermal data natively ~100 m, resampled to 30 m in the product). Rationale: it is a public,
-  documented, reproducible Level-2 product — an independent reviewer can re-download the exact
-  same scenes.
-- **Data source (secondary / cross-check):** MODIS MOD11/MYD11 LST (~1 km) for temporal
-  density and as an independent-sensor consistency check on the Landsat-derived effect.
-- **Pixel-count rule (resolves Section 1 size threshold):** a treatment site must contain at
-  least **30 valid (cloud-free, non-edge) Landsat LST pixels** wholly interior to the
-  transformed footprint, after excluding a one-pixel buffer along the footprint boundary to
-  avoid mixed-pixel contamination — and, per ADR-004, also ≥ 2 km from any other identified
-  large-scale transformation. At 30 m spacing, 30 interior pixels after a boundary buffer
-  corresponds roughly to the ≥ 25 ha placeholder in Section 1; the pixel-count rule is the
-  binding criterion, the hectare figure is indicative.
+**Pixel-count rule:** a treatment site must contain ≥ 30 valid (cloud-free, non-edge) interior
+Landsat LST pixels, after a one-pixel boundary buffer (mixed-pixel exclusion) and, per ADR-004,
+≥ 2 km from any other identified transformation.
 
-### 4.2 Secondary outcome
+**Known limitation — photovoltaic emissivity bias (documented, not corrected).** PV panels
+have lower emissivity (~0.8–0.87) than natural vegetated/soil surfaces (>0.9). The standard
+Landsat C2 L2 LST product assumes natural-surface emissivity, so LST over the treatment site
+may carry a systematic retrieval bias not present at natural-cover control sites. Building a
+PV-specific emissivity correction is deliberately out of scope (it would replace the
+reproducible standard product with a contestable custom model, contradicting ADR-002's
+rationale). This asymmetric bias is declared as a limitation on every RP001 LST result.
 
-**Albedo (surface shortwave reflectance).** Retrieved from the same Landsat Collection 2
-surface reflectance product via an established narrowband-to-broadband albedo conversion.
-Albedo is reported as a secondary outcome and as a candidate covariate/mechanistic hint, not
-as an independent confirmatory test.
+**Partial safeguard against misattribution:** an emissivity artifact would be approximately
+constant in sign across the year. The documented Mediterranean seasonal *sign reversal* of the
+LST effect (Section 4.4) therefore cannot be explained by emissivity bias alone — a
+sign-reversing seasonal signal is evidence of a real physical effect, not a pure retrieval
+artifact. This does not remove the bias but bounds its interpretation.
 
-### 4.3 Covariate (not an outcome)
+### 4.2 Secondary outcome — Albedo
 
-**NDVI**, from the same surface reflectance product, used to characterise vegetation state of
-treatment and control areas and as a covariate — explicitly NOT an outcome, to avoid
-circularity (vegetation change is often part of the transformation itself).
+Surface shortwave reflectance from the Landsat C2 L2 surface reflectance product
+(narrowband-to-broadband conversion). Reported as secondary; not an independent confirmatory
+test.
 
-### 4.4 Observation window and aggregation
+### 4.3 NDVI — mediator, not covariate; and the "total effect" framing
 
-- Observations are restricted to cloud-free thermal retrievals over a defined multi-season
-  window (minimum one full annual cycle) to avoid seasonal aliasing.
-- Treatment and control observations must be **paired in time** (same or near-adjacent
-  overpass dates) so that regional weather does not differentially affect one side.
-- Per-site LST is summarised per observation date, then across dates, producing a per-site
-  distribution rather than a pool of pixels (see Section 5 for why).
+RP001 measures the **total effect** of the anthropogenic transformation on LST — including the
+pathway by which the transformation alters vegetation, which in turn alters LST. Vegetation
+removal/alteration is *part of what "transforming" the land means*, consistent with the
+research question's framing of "anthropogenic transformation" as a whole.
+
+Therefore NDVI is treated as a **mediator** of the effect, not a confounder, and is **excluded
+from the confirmatory model as a covariate**. Controlling for a mediator would block part of
+the very effect RP001 aims to measure (over-control / mediator-blocking bias) and would answer
+a narrower question ("the direct effect of panels at fixed vegetation") than the one posed.
+
+NDVI is retained as a **descriptive/diagnostic variable** and as the basis for the Section 4.5
+secondary vegetation outcome. A formal mediation analysis (how much of the LST effect is
+transmitted via vegetation change) is logged as **exploratory only** — see EXPLORATORY_HYPOTHESES.md.
+
+**NDVI reliability caveat over treatment pixels:** after construction, NDVI over the treatment
+footprint reflects a mixed panel+soil+inter-row-vegetation spectral signature, not residual
+vegetation alone. NDVI over post-construction treatment pixels is therefore an optical-signature
+descriptor, not a clean vegetation measure — recorded as a limitation wherever NDVI is used.
+
+### 4.4 Seasonal structure of the LST outcome (critical revision)
+
+Literature for the same climate zone (Hurduc et al. 2024, Alentejo, Portugal — Mediterranean)
+documents that the solar-park LST effect **reverses sign seasonally**: cooling in summer,
+warming in winter, reducing the amplitude of the seasonal cycle.
+
+**Consequence for the confirmatory design:** aggregating across a full year into a single
+per-site LST summary (the prior v0.3 design) could cancel two genuine, opposite-signed seasonal
+effects toward a false null. RP001 therefore does **not** use an annual aggregate as the
+confirmatory outcome. Instead:
+
+- The confirmatory analysis is **season-stratified**. Summer (JJA) and winter (DJF) are the
+  two pre-registered seasonal windows.
+- The mixed-effects model (Section 5) includes a **season × treatment-status interaction**.
+- Two pre-registered confirmatory hypotheses result (Section 5.3), one per season, each with
+  its own null.
+
+Spring/autumn are analysed as **exploratory** (transition seasons, less clear prior), not
+confirmatory.
+
+### 4.5 Secondary outcome — vegetation change via difference-in-differences (before/after)
+
+Motivated by the research question's "transformation" framing and by the availability of
+verifiable pre-transformation imagery (Criterion 3): RP001 includes a **secondary,
+difference-in-differences (DiD)** outcome on vegetation.
+
+- **Estimand:** (ΔNDVI treatment: after − before) − (ΔNDVI control: after − before).
+- **Why DiD, not simple before/after:** the control term absorbs the common climatic/inter-annual
+  trend (e.g. a wet 2018 vs. a dry 2025), isolating the transformation-attributable change from
+  background climate variability. A simple before/after on the treatment alone cannot separate
+  the two and is explicitly rejected as insufficient.
+- **Before window:** pre-construction (for Case 001, groundbreaking March 2019 → use pre-2019
+  imagery, consistent with the 2018 scene already identified).
+- **Status:** secondary outcome, reported alongside but not as the primary confirmatory test.
+  Subject to the Section 4.3 NDVI mixed-signature caveat over treatment pixels.
+
+### 4.6 Observation window and temporal pairing
+
+- Cloud-free thermal retrievals over ≥ one full annual cycle, so both seasonal windows are
+  populated.
+- Treatment and control observations **paired in time** (same/near-adjacent overpass dates).
+  **This pairing rests on an explicit, verifiable assumption:** that regional weather anomalies
+  on a given date affect treatment and control comparably. This assumption is checked (Section
+  3 lists regional weather anomaly as a controlled variable) and reported, not merely asserted.
+- Per-site LST summarised per date (median of valid interior pixels), then within each seasonal
+  window — producing per-site, per-season distributions, not a pooled-pixel dataset.
 
 ---
 
 ## 5. Statistical Design, Test, and Significance Threshold
 
-**Status:** Reviewed with Opus 4.8 — Approved for pre-registration
+**Status:** Revised with Opus 4.8 (v0.4) — ready for Owner lock
 
 ### 5.1 Unit of analysis
 
-The unit of analysis is the **site**, not the pixel. This is the single most important
-methodological decision in RP001 and is non-negotiable without a new ADR.
+The unit of analysis is the **site**, not the pixel — non-negotiable without a new ADR.
+Pixels within a site are spatially autocorrelated and not independent; treating them as
+independent would inflate the effective sample size and produce false positives.
 
-Rationale: pixels within a single site are strongly spatially autocorrelated and are NOT
-independent observations. Treating thousands of pixels as independent would inflate effective
-sample size by orders of magnitude and produce spuriously tiny p-values even for a
-non-existent effect. This is the most common way studies of this kind reach false positives,
-and RP001 shall not commit it.
+### 5.2 Model
 
-### 5.2 Handling spatial autocorrelation
+Linear mixed-effects model with:
 
-Two complementary safeguards:
+- **Fixed effects:** treatment status (treatment vs control); season (JJA/DJF);
+  **season × treatment-status interaction** (the term of primary interest, per Section 4.4);
+  Section 3 confounders as covariates.
+- **Random effect:** site (and matched control-cluster), capturing the nested structure
+  (observations within sites within matched clusters).
 
-1. **Per-site aggregation** — each site/date yields a summary statistic (e.g. median LST of
-   valid interior pixels), collapsing within-site pixel autocorrelation before any
-   comparison.
-2. **Mixed-effects model** — the confirmatory analysis uses a linear mixed-effects model with
-   **site (and matched control-cluster) as a random effect**, and transformation status
-   (treatment vs control) as the fixed effect of interest, with the Section 3 confounders as
-   covariates. This explicitly models the nested structure (observations within sites within
-   matched clusters) rather than pretending observations are independent.
+Per-site aggregation (Section 4.6) plus the site random effect jointly address within-site
+spatial autocorrelation. Residual spatial autocorrelation is checked (Moran's I on residuals)
+and reported, not hidden.
 
-Residual spatial autocorrelation shall be checked (e.g. Moran's I on model residuals) and
-reported; if present, it is disclosed as a limitation rather than hidden.
+### 5.3 Confirmatory tests and threshold
 
-### 5.3 Confirmatory test and threshold
+Two pre-registered confirmatory hypotheses, from the season × treatment interaction:
 
-- **Primary confirmatory test:** the fixed-effect coefficient for transformation status in
-  the mixed-effects model (treatment vs control LST difference, controlling for covariates).
-- **Significance threshold:** α = 0.05, **two-tailed** (the direction of any LST effect is
-  not assumed a priori — this preserves falsifiability in both directions).
-- **Multiple-comparisons correction:** because RP001 will eventually run across multiple
-  transformation classes and two outcomes (LST primary, albedo secondary), the family of
-  confirmatory tests shall be corrected. The primary outcome (LST) per transformation class
-  is the pre-registered confirmatory family; a Benjamini–Hochberg false-discovery-rate
-  correction is applied across that family. Albedo and any per-class exploratory analyses are
-  labelled exploratory and are NOT counted toward confirmatory claims.
+- **H0(summer):** no treatment–control LST difference in JJA, controlling for covariates.
+- **H0(winter):** no treatment–control LST difference in DJF, controlling for covariates.
+
+- **Threshold:** α = 0.05, **two-tailed** (direction not assumed a priori — essential here,
+  since the literature predicts opposite signs by season; falsifiability preserved in both
+  directions).
+- **Multiple-comparisons correction:** the confirmatory family is {H0(summer), H0(winter)}
+  per transformation class. Benjamini–Hochberg FDR correction applied across this family. As
+  more transformation classes are added, they extend the family. Albedo (4.2), the vegetation
+  DiD (4.5), spring/autumn, and any mediation analysis are **exploratory** and excluded from
+  the confirmatory family.
 
 ### 5.4 Effect size (mandatory alongside p-value)
 
-A p-value alone is insufficient. Every confirmatory result reports:
+Every confirmatory result reports the estimated LST difference in **°C with 95% CI** (the
+physically meaningful effect size) and a standardised effect size. A statistically significant
+but physically negligible difference is reported as such — significance is not promoted to
+physical importance.
 
-- the estimated LST difference in **kelvin/°C** with a 95% confidence interval (the physically
-  meaningful effect size), and
-- a standardised effect size for cross-study comparison.
+### 5.5 Statistical power (computed BEFORE acquisition), using literature priors
 
-A statistically significant but physically negligible LST difference (e.g. a few hundredths
-of a degree) shall be reported as such — statistical significance is not promoted to practical
-or physical significance.
+Power is driven by the **number of matched site clusters**, not pixel count. Two literature-
+derived effect-size scenarios bound the power analysis:
 
-### 5.5 Statistical power (computed BEFORE data acquisition)
+- **Global annual prior:** ~0.5 K daytime LST effect (116-farm global assessment). Small — a
+  conservative lower bound requiring many sites.
+- **Mediterranean summer prior:** ~2 K summer treatment–control differential (Hurduc et al.,
+  same climate zone as Case 001). Large — the season-stratified design (Section 4.4) is powered
+  primarily against this, and a ~2 K summer effect requires far fewer sites than a 0.5 K annual
+  effect.
 
-Power is driven by the **number of matched site clusters**, not the number of pixels. Before
-acquisition, a power analysis shall determine the minimum number of treatment sites (each with
-≥ 2 controls) required to detect a pre-specified minimum LST difference of scientific interest
-(the minimum effect size to be declared in advance, not after seeing data). If the achievable
-number of qualifying sites is below the powered minimum, RP001 shall report the study as
-underpowered rather than proceed and over-claim.
+The pre-registered minimum effect size of interest, and the resulting minimum number of
+treatment sites (each with ≥ 2 controls), are set before acquisition. **If the achievable
+number of qualifying sites is below the powered minimum, RP001 is reported as underpowered
+rather than proceeding to over-claim.** Where a site's usable sample is an ADR-004 clean zone
+smaller than its full footprint, the actual clean-zone pixel count is used.
 
-Note (per ADR-004): where a site's usable sample is a "clean sampling zone" smaller than its
-full footprint, the power analysis must use the actual clean-zone pixel count for that site,
-not its full-footprint pixel count.
+### 5.6 Case 001 status: pilot / proof-of-methodology, not confirmatory alone
 
-### 5.6 Pre-registration lock
+With a single treatment site (Case 001) plus 2 controls, the site-level random effect has
+minimal degrees of freedom — n=1 treatment cannot support a confirmatory site-level inference.
+**Case 001 alone is therefore a pilot / proof-of-methodology**, used to validate the end-to-end
+pipeline (acquisition → LST extraction → seasonal model) and to produce a first effect-size
+estimate. Confirmatory inference for RP001 requires the multi-site sample sized per Section 5.5.
+This framing is explicit to avoid over-interpreting a single-site result.
 
-Sections 4 and 5 constitute the pre-registered analysis plan. Once locked and committed, any
-deviation (change of primary outcome, test, threshold, correction method, or effect-size
-definition) requires a new ADR and must be reported in the publication as a deviation from
-pre-registration. Analysis decisions made after seeing outcome data are, by definition,
-exploratory and shall be labelled as such — see
-`research_programs/RP001-surface-transformation-energy-balance/EXPLORATORY_HYPOTHESES.md`
-for hypotheses explicitly logged as non-confirmatory.
+### 5.7 Pre-registration lock
+
+Sections 4–5 constitute the pre-registered analysis plan. Once locked, any deviation (primary
+outcome, model structure, seasonal stratification, test, threshold, correction, or effect-size
+definition) requires a new ADR and is reported in publication as a pre-registration deviation.
+Post-hoc, data-dependent decisions are exploratory by definition and labelled as such (see
+EXPLORATORY_HYPOTHESES.md).
 
 ---
 
 ## Status of This Document
 
 - Sections 1–3: Draft, ready for standard technical review.
-- Sections 4–5: Reviewed with Opus 4.8, approved for pre-registration. Ready to be **locked**
-  by human decision (Owner) before dataset acquisition begins.
+- Sections 4–5: Revised with Opus 4.8 after literature review. Ready for **Owner lock decision**.
 
 Human responsibility note (per governance/AI_USAGE.md): AI has drafted and reviewed this
 methodology as technical assistant. Final approval and locking of the pre-registration is a
@@ -252,15 +286,16 @@ human decision reserved to the Owner.
 
 - `research_programs/RP001-surface-transformation-energy-balance/RESEARCH_QUESTION.md`
 - `research_programs/RP001-surface-transformation-energy-balance/EXPLORATORY_HYPOTHESES.md`
+- `research_programs/RP001-surface-transformation-energy-balance/LITERATURE_BRIEFING_sections4-5.md`
 - `governance/adr/ADR-001-generalized-scope.md`
 - `governance/adr/ADR-002-lst-primary-outcome.md`
 - `governance/adr/ADR-004-criterion4-refinement.md`
-- `foundation/GLOSSARY.md`
 
 ## Change Log
 
 | Version | Date | Change |
 |---|---|---|
 | 0.1.0 | 2026-07-10 | Initial draft; Sections 1–3 drafted, Sections 4–5 flagged for Opus review |
-| 0.2.0 | 2026-07-10 | Sections 4–5 completed and reviewed with Opus 4.8 (LST primary per ADR-002, site as unit of analysis, mixed-effects model, FDR correction, power on site count); Section 1 pixel-count rule and Section 3 emissivity/overpass-time confounders added |
-| 0.3.0 | 2026-07-10 | Section 1 Criterion 4 refined per ADR-004 (clean sampling zone); Section 2 control area criteria now require the same no-nearby-transformation check; Section 5.5 power note on clean-zone pixel counts; linked new EXPLORATORY_HYPOTHESES.md |
+| 0.2.0 | 2026-07-10 | Sections 4–5 completed and reviewed with Opus 4.8 (LST primary, site as unit, mixed-effects, FDR, power on site count) |
+| 0.3.0 | 2026-07-10 | Section 1 Criterion 4 refined per ADR-004; Section 2 control-area no-nearby-transformation check; linked EXPLORATORY_HYPOTHESES.md |
+| 0.4.0 | 2026-07-11 | Post-literature-review revision (Opus 4.8): season-stratified confirmatory design with season×treatment interaction and two seasonal nulls (4.4, 5.3); NDVI reclassified as mediator, excluded from confirmatory model, total-effect framing (4.3); vegetation difference-in-differences added as secondary outcome (4.5); emissivity bias documented as limitation with seasonal-reversal safeguard (4.1); temporal pairing stated as explicit assumption (4.6); power analysis bound by literature effect-size priors (5.5); Case 001 framed as pilot/proof-of-methodology (5.6) |
