@@ -2,8 +2,8 @@
 # RP001 — Case 001: Núñez de Balboa Photovoltaic Plant
 
 - **Document ID:** HERMES-RP001-CASE-001
-- **Version:** 0.3.0
-- **Status:** Case Selection Approved (Criteria 1–4) — Control Areas provisionally selected, pending final human sign-off
+- **Version:** 0.4.0
+- **Status:** Case Selection Approved (Criteria 1–4) — Control Areas selected (C1 + C5), pending final human sign-off
 - **Owner:** Filippo Cobelli
 - **Reviewers:** Claude (AI-assisted, Scientific Method Reviewer role — Sonnet 5)
 - **Last Updated:** 2026-07-10
@@ -68,32 +68,50 @@ Per HYPOTHESES.md Section 2 (as updated 2026-07-10), candidates were generated b
 4. Cross-checking elevation (Open-Elevation API) — all 5 candidates within ±100 m of the
    treatment site's 469 m elevation.
 5. Visual comparison (Sentinel-2 2025 imagery, annotated) against the pre-transformation
-   land-cover read above.
+   land-cover read.
+6. Water-body proximity check (OpenStreetMap rivers/streams/canals/water polygons):
+   treatment site is 101 m from the nearest water feature (a stream crossing the plant
+   footprint near its centroid).
 
-| ID | Lat, Lon | Dist. to treatment | Elevation diff | Visual match | Selected? |
-|---|---|---|---|---|---|
-| C1 | 38.43534, -6.17401 | 4,500 m | +17 m | Dehesa, denser canopy — plausible match | ✅ Yes |
-| C2 | 38.40706, -6.19020 | 4,500 m | +68 m | Sharp field boundaries — likely intensive cropland, weaker match | ❌ No |
-| C3 | 38.39607, -6.22706 | 4,500 m | +88 m | Sharp field boundaries — likely intensive cropland, weaker match | ❌ No |
-| C4 | 38.40879, -6.26301 | 4,500 m | +71 m | Same mottled texture as area directly adjacent to plant's south edge — strongest visual match | ✅ Yes |
-| C5 | 38.43507, -6.16257 | 5,500 m | -25 m | Similar to C1, redundant given C1 already selected | ❌ No (kept as backup) |
+| ID | Lat, Lon | Dist. to treatment | Elevation diff | Visual land cover | Water distance | Water ratio | Selected? |
+|---|---|---|---|---|---|---|---|
+| C1 | 38.43534, -6.17401 | 4,500 m | +17 m | Dehesa, denser canopy — plausible match | 156 m | 1.54x | ✅ Yes |
+| C2 | 38.40706, -6.19020 | 4,500 m | +68 m | Sharp field boundaries — likely intensive cropland | not checked | — | ❌ No |
+| C3 | 38.39607, -6.22706 | 4,500 m | +88 m | Sharp field boundaries — likely intensive cropland | not checked | — | ❌ No |
+| C4 | 38.40879, -6.26301 | 4,500 m | +71 m | Strongest visual land-cover match | **2,231 m** | **22.01x** | ❌ **No — rejected, water mismatch** |
+| C5 | 38.43507, -6.16257 | 5,500 m | -25 m | Similar to C1, plausible dehesa match | 380 m | 3.74x | ✅ Yes (promoted from backup) |
+
+**Correction (2026-07-10):** C4 was initially selected as Control 1 based on the strongest
+visual land-cover match, before the water-proximity check was performed. That check showed
+C4 is 22x farther from the nearest water feature than the treatment site — well outside the
+"same order of magnitude" tolerance (0.1x–10x). Per Foundation Core Principles ("better
+evidence replaces previous evidence"), C4 is rejected and replaced by C5, which passes both
+elevation and water-proximity checks. This correction is logged rather than silently applied.
+
+**Known limitation of this check (not yet resolved):** treatment's 101 m water distance is
+measured from a single centroid point, and a stream happens to cross the footprint near that
+exact point. The clean sampling zone actually used for LST analysis spans 786 ha and likely
+has a much wider range of water distances than its centroid alone suggests. The same caveat
+applies to C1/C5 centroids vs. their own (not yet defined) sampling sub-areas. This
+centroid-only comparison is a simplification, recorded as a limitation rather than treated as
+fully resolved.
 
 ## Selected Control Areas (provisional)
 
-- **Control 1 = C4** — 38.40879, -6.26301 — strongest visual match, adjacent to treatment
-  footprint's own likely pre-transformation cover.
-- **Control 2 = C1** — 38.43534, -6.17401 — independent location (different bearing/distance),
-  plausible dehesa match, provides spatial independence from Control 1 for the mixed-effects
-  model (HYPOTHESES.md Section 5.2).
-- **C5 retained as backup** third control if either C1 or C4 fails further inspection.
+- **Control 1 = C5** — 38.43507, -6.16257 — passes elevation (-25 m), water proximity
+  (380 m, 3.74x), plausible dehesa land-cover match.
+- **Control 2 = C1** — 38.43534, -6.17401 — passes elevation (+17 m), water proximity
+  (156 m, 1.54x — closest match to treatment), plausible dehesa land-cover match.
+- **C4 rejected** — best land-cover match but fails water-proximity criterion (22x
+  mismatch). Retained in this document for traceability, not as an active candidate.
 
 **These are provisional, not locked.** Per governance/AI_USAGE.md, final approval of control
 areas is an Owner decision. Outstanding before lock:
 
-1. Distance-to-water-body comparability (treatment vs. C1 vs. C4) — not yet checked.
+1. The centroid-representativity limitation noted above (water distance measured at a single
+   point, not across the full sampling area) — ideally resolved before publication-grade use.
 2. A higher-confidence land-cover classification (e.g. multi-band NDVI comparison, not just
-   true-color visual read) would strengthen the pre-transformation match claim before
-   publication-grade use, though is not required to proceed with methodology development.
+   true-color visual read) would strengthen the pre-transformation match claim.
 
 ## Related Documents
 
@@ -111,3 +129,4 @@ areas is an Owner decision. Outstanding before lock:
 | 0.1.0 | 2026-07-10 | Initial case candidate identified; Criteria 1-3 pass, Criterion 4 pending visual verification |
 | 0.2.0 | 2026-07-10 | Criterion 4 resolved via ADR-004 clean-zone method: PASS |
 | 0.3.0 | 2026-07-10 | Control area candidates generated, pre-transformation land cover assessed (moderate confidence), C4 + C1 provisionally selected as Control 1/2, C5 as backup |
+| 0.4.0 | 2026-07-10 | Water-proximity check performed: C4 rejected (22x mismatch vs. treatment), replaced by C5 (3.74x, passes). Final provisional set: Control 1 = C5, Control 2 = C1. Centroid-representativity limitation documented. |
