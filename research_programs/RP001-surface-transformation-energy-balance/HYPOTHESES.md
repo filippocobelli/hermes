@@ -3,7 +3,7 @@
 
 - **Document ID:** HERMES-RP001-001
 - **Version:** 0.4.0
-- **Status:** Draft for Review — Sections 4–5 revised with Opus 4.8 after literature review; ready for Owner lock decision
+- **Status:** **Locked** (2026-07-11) — see governance/adr and PRE_REGISTRATION_LOCK.md; Sections 1–3 originally Sonnet 5, Sections 4–5 Opus 4.8 (twice, second pass post-literature-review)
 - **Owner:** Filippo Cobelli
 - **Reviewers:** Claude (AI-assisted, Scientific Method Reviewer role — Sections 1–3 Sonnet 5; Sections 4–5 Opus 4.8, revised after literature review HERMES-RP001-003)
 - **Last Updated:** 2026-07-11

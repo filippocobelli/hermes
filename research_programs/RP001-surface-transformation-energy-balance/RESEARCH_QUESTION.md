@@ -3,7 +3,7 @@
 
 - **Document ID:** HERMES-RP001-000
 - **Version:** 0.3.0
-- **Status:** Draft for Review — aligned with HYPOTHESES.md v0.4
+- **Status:** **Locked** (2026-07-11) — see PRE_REGISTRATION_LOCK.md
 - **Owner:** Filippo Cobelli
 - **Reviewers:** Claude (AI-assisted, Scientific Method Reviewer role)
 - **Last Updated:** 2026-07-11
